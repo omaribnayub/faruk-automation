@@ -57,12 +57,29 @@ Upload the contents of `dist/` after running `npm run build`.
 - Admin panel: `/admin`
 
 In admin mode you can:
-- Edit all website text as JSON
-- Save content to browser localStorage
-- Reset to default content
-- Export content as `website-content.json`
+- Edit website sections with add/edit/delete controls
+- Manage projects, services, packages, and section text
+- View lead inbox from the contact form
+- See dashboard cards and section activity chart
+
+## 7) Firebase setup (recommended)
+
+Create a `.env` file in project root:
+
+```bash
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+```
+
+Without Firebase variables, the app automatically falls back to browser local storage.
 
 Core CMS files:
 - `src/content/defaultContent.js` - default content schema
-- `src/content/cmsStorage.js` - save/load/reset logic
-- `src/AdminPage.jsx` - admin editor UI
+- `src/content/cmsStorage.js` - local fallback save/load/reset logic
+- `src/content/cmsService.js` - cloud/local data service
+- `src/lib/firebase.js` - Firebase bootstrap
+- `src/AdminPage.jsx` - dashboard + CRUD admin UI

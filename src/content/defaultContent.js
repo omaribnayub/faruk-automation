@@ -104,6 +104,42 @@ export const defaultContent = {
     primaryButtonText: "Request a Consultation",
     secondaryButtonText: "Contact Now"
   },
+  packagesTitle: "SaaS Portfolio Packages",
+  packages: [
+    {
+      name: "Starter",
+      price: "$99",
+      period: "/month",
+      features: [
+        "Single project landing page",
+        "Up to 3 service sections",
+        "Basic contact lead capture"
+      ],
+      cta: "Choose Starter"
+    },
+    {
+      name: "Growth",
+      price: "$249",
+      period: "/month",
+      features: [
+        "Full portfolio CMS",
+        "Lead inbox dashboard",
+        "Priority support and updates"
+      ],
+      cta: "Choose Growth"
+    },
+    {
+      name: "Enterprise",
+      price: "Custom",
+      period: "",
+      features: [
+        "Multi-site setup",
+        "Advanced automation consulting",
+        "Dedicated engineering support"
+      ],
+      cta: "Contact Sales"
+    }
+  ],
   contact: {
     title: "Get in Touch",
     directContactTitle: "Direct Contact",

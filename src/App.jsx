@@ -1,5 +1,7 @@
+import { useState } from "react";
 import "./App.css";
 import { defaultContent } from "./content/defaultContent";
+import { submitLead } from "./content/cmsService";
 
 function Section({ id, className = "", title, children }) {
   return (
@@ -13,6 +15,51 @@ function Section({ id, className = "", title, children }) {
 }
 
 function App({ content = defaultContent }) {
+  const [formState, setFormState] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    projectType: "",
+    message: ""
+  });
+  const [sendState, setSendState] = useState({
+    loading: false,
+    message: "",
+    error: ""
+  });
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormState((current) => ({ ...current, [name]: value }));
+  };
+
+  const handleContactSubmit = async (event) => {
+    event.preventDefault();
+    setSendState({ loading: true, message: "", error: "" });
+
+    try {
+      await submitLead(formState);
+      setSendState({
+        loading: false,
+        message: "Message sent successfully. We will contact you soon.",
+        error: ""
+      });
+      setFormState({
+        name: "",
+        email: "",
+        phone: "",
+        projectType: "",
+        message: ""
+      });
+    } catch {
+      setSendState({
+        loading: false,
+        message: "",
+        error: "Failed to send your message. Please try again."
+      });
+    }
+  };
+
   return (
     <>
       <header className="hero">
@@ -118,13 +165,42 @@ function App({ content = defaultContent }) {
         </div>
       </section>
 
+      <Section id="packages" title={content.packagesTitle}>
+        <div className="card-grid package-grid">
+          {content.packages.map((item) => (
+            <article key={item.name} className="card package-card">
+              <h3>{item.name}</h3>
+              <p className="package-price">
+                {item.price}
+                <span>{item.period}</span>
+              </p>
+              <ul className="package-features">
+                {item.features.map((feature) => (
+                  <li key={feature}>{feature}</li>
+                ))}
+              </ul>
+              <a className="btn btn-secondary" href="#contact">
+                {item.cta}
+              </a>
+            </article>
+          ))}
+        </div>
+      </Section>
+
       <Section id="contact" className="light-bg" title={content.contact.title}>
         <div className="contact-grid">
-          <form className="contact-form" onSubmit={(e) => e.preventDefault()}>
+          <form className="contact-form" onSubmit={handleContactSubmit}>
             <div className="form-grid">
               <div>
                 <label htmlFor="name">Name</label>
-                <input id="name" name="name" type="text" placeholder="Your name" />
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  placeholder="Your name"
+                  value={formState.name}
+                  onChange={handleChange}
+                />
               </div>
               <div>
                 <label htmlFor="email">Email</label>
@@ -133,15 +209,29 @@ function App({ content = defaultContent }) {
                   name="email"
                   type="email"
                   placeholder="your@email.com"
+                  value={formState.email}
+                  onChange={handleChange}
                 />
               </div>
               <div>
                 <label htmlFor="phone">Phone</label>
-                <input id="phone" name="phone" type="tel" placeholder="+880..." />
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  placeholder="+880..."
+                  value={formState.phone}
+                  onChange={handleChange}
+                />
               </div>
               <div>
                 <label htmlFor="projectType">Project Type</label>
-                <select id="projectType" name="projectType">
+                <select
+                  id="projectType"
+                  name="projectType"
+                  value={formState.projectType}
+                  onChange={handleChange}
+                >
                   <option value="">Select project type</option>
                   <option>PLC Programming</option>
                   <option>SCADA/HMI Development</option>
@@ -156,12 +246,16 @@ function App({ content = defaultContent }) {
                   id="message"
                   name="message"
                   placeholder="Tell us about your project..."
+                  value={formState.message}
+                  onChange={handleChange}
                 />
               </div>
             </div>
-            <button className="btn btn-primary" type="submit">
-              Send Message
+            <button className="btn btn-primary" type="submit" disabled={sendState.loading}>
+              {sendState.loading ? "Sending..." : "Send Message"}
             </button>
+            {sendState.message ? <p className="admin-message success">{sendState.message}</p> : null}
+            {sendState.error ? <p className="admin-message error">{sendState.error}</p> : null}
           </form>
 
           <aside className="contact-info">
