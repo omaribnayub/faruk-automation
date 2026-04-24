@@ -286,8 +286,17 @@ function AdminPage() {
     try {
       await signInWithEmailAndPassword(auth, authForm.email, authForm.password);
       setAuthForm({ email: "", password: "" });
-    } catch {
-      setAuthError("Login failed. Check admin email and password.");
+    } catch (loginError) {
+      const errorCode =
+        typeof loginError === "object" && loginError !== null && "code" in loginError
+          ? String(loginError.code)
+          : "";
+      const readableCode = errorCode.replace("auth/", "").replaceAll("-", " ");
+      setAuthError(
+        readableCode
+          ? `Login failed: ${readableCode}.`
+          : "Login failed. Check admin email and password."
+      );
     }
   };
 
