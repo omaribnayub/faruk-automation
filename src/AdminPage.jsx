@@ -1,4 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut
+} from "firebase/auth";
 import App from "./App";
 import { defaultContent } from "./content/defaultContent";
 import {
@@ -8,7 +13,7 @@ import {
   resetSiteContent,
   saveSiteContent
 } from "./content/cmsService";
-import { isFirebaseConfigured } from "./lib/firebase";
+import { auth, isFirebaseConfigured } from "./lib/firebase";
 
 function StringArrayEditor({ label, values, onChange }) {
   const [draft, setDraft] = useState("");
@@ -169,8 +174,32 @@ function AdminPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(!isFirebaseConfigured);
+  const [authLoading, setAuthLoading] = useState(isFirebaseConfigured);
+  const [authForm, setAuthForm] = useState({ email: "", password: "" });
+  const [authError, setAuthError] = useState("");
 
   useEffect(() => {
+    if (!isFirebaseConfigured || !auth) {
+      setAuthLoading(false);
+      setIsAuthenticated(true);
+      return;
+    }
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsAuthenticated(Boolean(user));
+      setAuthLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setIsLoading(false);
+      return;
+    }
+
     async function loadData() {
       try {
         const [savedContent, savedLeads] = await Promise.all([getSiteContent(), getLeads()]);
@@ -183,7 +212,7 @@ function AdminPage() {
       }
     }
     loadData();
-  }, []);
+  }, [isAuthenticated]);
 
   const sectionStats = useMemo(() => {
     return [
@@ -248,6 +277,70 @@ function AdminPage() {
     }
   };
 
+  const handleAdminLogin = async (event) => {
+    event.preventDefault();
+    if (!auth) {
+      return;
+    }
+    setAuthError("");
+    try {
+      await signInWithEmailAndPassword(auth, authForm.email, authForm.password);
+      setAuthForm({ email: "", password: "" });
+    } catch {
+      setAuthError("Login failed. Check admin email and password.");
+    }
+  };
+
+  const handleAdminLogout = async () => {
+    if (!auth) {
+      return;
+    }
+    await signOut(auth);
+  };
+
+  if (authLoading) {
+    return <div className="admin-layout">Checking admin access...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="admin-layout">
+        <section className="admin-auth-card">
+          <h1>Admin Login</h1>
+          <p>Sign in with your Firebase admin account to access this dashboard.</p>
+          <form className="admin-auth-form" onSubmit={handleAdminLogin}>
+            <div>
+              <label htmlFor="admin-email">Email</label>
+              <input
+                id="admin-email"
+                type="email"
+                value={authForm.email}
+                onChange={(e) => setAuthForm((current) => ({ ...current, email: e.target.value }))}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="admin-password">Password</label>
+              <input
+                id="admin-password"
+                type="password"
+                value={authForm.password}
+                onChange={(e) =>
+                  setAuthForm((current) => ({ ...current, password: e.target.value }))
+                }
+                required
+              />
+            </div>
+            <button className="btn btn-primary" type="submit">
+              Sign In
+            </button>
+            {authError ? <p className="admin-message error">{authError}</p> : null}
+          </form>
+        </section>
+      </div>
+    );
+  }
+
   if (isLoading) {
     return <div className="admin-layout">Loading dashboard...</div>;
   }
@@ -262,6 +355,11 @@ function AdminPage() {
         <p className="admin-mode-tag">
           Data mode: {isFirebaseConfigured ? "Firebase (Cloud)" : "Local (Browser Storage)"}
         </p>
+        {isFirebaseConfigured ? (
+          <button className="btn btn-secondary" type="button" onClick={handleAdminLogout}>
+            Logout
+          </button>
+        ) : null}
       </header>
 
       <section className="admin-dashboard-grid">
