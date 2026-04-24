@@ -1,0 +1,394 @@
+:root {
+  --primary: #0a2540;
+  --accent: #1f7ae0;
+  --accent-orange: #ff7a18;
+  --bg: #f5f7fa;
+  --text: #1f2a37;
+  --muted: #5b6b7a;
+  --card: #ffffff;
+  --border: #dbe2ea;
+  --radius: 14px;
+  --shadow: 0 10px 25px rgba(10, 37, 64, 0.08);
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  background: #ffffff;
+  line-height: 1.6;
+}
+
+.container {
+  width: min(1120px, 92%);
+  margin: 0 auto;
+}
+
+section {
+  padding: 64px 0;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0 0 14px;
+  color: var(--primary);
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  color: #ffffff;
+}
+
+h2 {
+  font-size: clamp(1.6rem, 3.2vw, 2.25rem);
+  font-weight: 800;
+}
+
+p {
+  margin: 0 0 12px;
+  color: var(--muted);
+}
+
+.hero {
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  background:
+    linear-gradient(rgba(10, 37, 64, 0.78), rgba(10, 37, 64, 0.78)),
+    url("https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=1600&q=80")
+      center/cover no-repeat;
+}
+
+.hero-subheadline {
+  color: #e8edf3;
+  max-width: 760px;
+  font-size: 1.1rem;
+}
+
+.btn-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.centered {
+  justify-content: center;
+}
+
+.btn {
+  display: inline-block;
+  text-decoration: none;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: #1665bc;
+}
+
+.btn-outline {
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.btn-secondary:hover {
+  background: #e8f1fb;
+}
+
+.trust-bar {
+  background: var(--primary);
+  color: #ffffff;
+  padding: 18px 0;
+}
+
+.trust-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  font-weight: 600;
+}
+
+.trust-list li::before {
+  content: "✔ ";
+}
+
+.light-bg {
+  background: var(--bg);
+}
+
+.card-grid {
+  margin-top: 28px;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px;
+}
+
+.industry-card {
+  text-align: center;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.project-card p strong {
+  color: #0f1f33;
+}
+
+.technology-list,
+.check-list {
+  list-style: none;
+  margin: 24px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.technology-list {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.technology-list li,
+.check-list li {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-weight: 600;
+}
+
+.technology-list li {
+  border-left: 5px solid var(--accent);
+}
+
+.check-list li::before {
+  content: "✔ ";
+}
+
+.cta {
+  background: linear-gradient(120deg, var(--primary), #153d66);
+  text-align: center;
+}
+
+.cta h2,
+.cta p {
+  color: #ffffff;
+}
+
+.contact-grid {
+  margin-top: 24px;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 1.5fr 1fr;
+}
+
+.contact-form,
+.contact-info {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+.form-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, 1fr);
+  margin-bottom: 16px;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+label {
+  display: block;
+  font-size: 0.92rem;
+  margin-bottom: 6px;
+  color: #334155;
+  font-weight: 600;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid #c9d3de;
+  border-radius: 8px;
+  padding: 11px 12px;
+  font: inherit;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 130px;
+}
+
+.contact-info p {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.whatsapp-btn {
+  display: inline-block;
+  text-decoration: none;
+  margin-top: 10px;
+  color: #ffffff;
+  background: #25d366;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+.upgrade-card {
+  border-top: 5px solid var(--accent-orange);
+}
+
+footer {
+  background: #081d33;
+  color: #c9d4df;
+  padding: 46px 0 22px;
+}
+
+.footer-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+footer h3 {
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+footer ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 7px;
+}
+
+footer a {
+  text-decoration: none;
+  color: #c9d4df;
+}
+
+.copyright {
+  margin: 28px 0 0;
+  text-align: center;
+  border-top: 1px solid #203c59;
+  padding-top: 16px;
+  color: #c9d4df;
+}
+
+.admin-layout {
+  max-width: 1120px;
+  margin: 24px auto 64px;
+  padding: 0 16px;
+}
+
+.admin-header h1 {
+  color: var(--primary);
+}
+
+.admin-actions {
+  margin: 18px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.admin-label {
+  display: block;
+  font-weight: 700;
+  margin: 8px 0;
+}
+
+.admin-editor {
+  width: 100%;
+  min-height: 360px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  padding: 14px;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.admin-message {
+  margin: 8px 0;
+  font-weight: 600;
+}
+
+.admin-message.success {
+  color: #0f8a43;
+}
+
+.admin-message.error {
+  color: #c02a2a;
+}
+
+.admin-preview-wrap {
+  margin-top: 16px;
+}
+
+.admin-preview-wrap summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.admin-preview {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  section {
+    padding: 52px 0;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
