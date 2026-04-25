@@ -559,4 +559,4 @@ function AdminPage() {
   );
 }
 
-export default AdminPage;
+export default function Home() {}
