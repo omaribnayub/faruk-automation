@@ -10,8 +10,15 @@ import {
   serverTimestamp,
   setDoc
 } from "firebase/firestore";
+
 import { defaultContent } from "./defaultContent";
-import { CMS_STORAGE_KEY, getContent, resetContent, saveContent } from "./cmsStorage";
+import {
+  CMS_STORAGE_KEY,
+  getContent,
+  resetContent,
+  saveContent
+} from "./cmsStorage";
+
 import { db, isFirebaseConfigured } from "../lib/firebase";
 
 const SITE_CONTENT_DOC = "siteContent";
@@ -19,18 +26,14 @@ const SETTINGS_COLLECTION = "settings";
 const LEADS_COLLECTION = "leads";
 const LEADS_STORAGE_KEY = `${CMS_STORAGE_KEY}_leads`;
 
-function mergeContent(raw) {
-  return { ...defaultContent, ...(raw || {}) };
-}
+/* ---------------- LOCAL STORAGE HELPERS ---------------- */
 
 function getLocalLeads() {
-  if (typeof window === "undefined") {
-    return [];
-  }
+  if (typeof window === "undefined") return [];
+
   const saved = window.localStorage.getItem(LEADS_STORAGE_KEY);
-  if (!saved) {
-    return [];
-  }
+  if (!saved) return [];
+
   try {
     const parsed = JSON.parse(saved);
     return Array.isArray(parsed) ? parsed : [];
@@ -40,11 +43,15 @@ function getLocalLeads() {
 }
 
 function saveLocalLeads(leads) {
-  if (typeof window === "undefined") {
-    return;
-  }
+  if (typeof window === "undefined") return;
   window.localStorage.setItem(LEADS_STORAGE_KEY, JSON.stringify(leads));
 }
+
+function mergeContent(raw) {
+  return { ...defaultContent, ...(raw || {}) };
+}
+
+/* ---------------- SITE CONTENT ---------------- */
 
 export async function getSiteContent() {
   if (!isFirebaseConfigured || !db) {
@@ -53,10 +60,15 @@ export async function getSiteContent() {
 
   const ref = doc(db, SETTINGS_COLLECTION, SITE_CONTENT_DOC);
   const snap = await getDoc(ref);
+
   if (!snap.exists()) {
-    await setDoc(ref, { content: defaultContent, updatedAt: serverTimestamp() });
+    await setDoc(ref, {
+      content: defaultContent,
+      updatedAt: serverTimestamp()
+    });
     return defaultContent;
   }
+
   const data = snap.data();
   return mergeContent(data.content);
 }
@@ -66,7 +78,9 @@ export async function saveSiteContent(content) {
     saveContent(content);
     return;
   }
+
   const ref = doc(db, SETTINGS_COLLECTION, SITE_CONTENT_DOC);
+
   await setDoc(
     ref,
     {
@@ -82,10 +96,18 @@ export async function resetSiteContent() {
     resetContent();
     return defaultContent;
   }
+
   const ref = doc(db, SETTINGS_COLLECTION, SITE_CONTENT_DOC);
-  await setDoc(ref, { content: defaultContent, updatedAt: serverTimestamp() });
+
+  await setDoc(ref, {
+    content: defaultContent,
+    updatedAt: serverTimestamp()
+  });
+
   return defaultContent;
 }
+
+/* ---------------- LEADS ---------------- */
 
 export async function submitLead(payload) {
   const lead = {
@@ -93,16 +115,20 @@ export async function submitLead(payload) {
     createdAtISO: new Date().toISOString()
   };
 
+  // LOCAL MODE
   if (!isFirebaseConfigured || !db) {
     const leads = getLocalLeads();
-    const nextLead = {
+
+    const newLead = {
       id: crypto.randomUUID(),
       ...lead
     };
-    saveLocalLeads([nextLead, ...leads]);
+
+    saveLocalLeads([newLead, ...leads]);
     return;
   }
 
+  // FIREBASE MODE
   await addDoc(collection(db, LEADS_COLLECTION), {
     ...lead,
     createdAt: serverTimestamp()
@@ -116,8 +142,10 @@ export async function getLeads() {
 
   const q = query(collection(db, LEADS_COLLECTION), orderBy("createdAt", "desc"));
   const snap = await getDocs(q);
+
   return snap.docs.map((item) => {
     const data = item.data();
+
     return {
       id: item.id,
       ...data,
