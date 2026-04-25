@@ -13,7 +13,7 @@ import {
   resetSiteContent,
   saveSiteContent
 } from "./content/cmsService";
-import { auth, isFirebaseConfigured } from "./lib/firebase";
+import { auth } from "./lib/firebase";
 
 function StringArrayEditor({ label, values, onChange }) {
   const [draft, setDraft] = useState("");
@@ -174,13 +174,13 @@ function AdminPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(!isFirebaseConfigured);
-  const [authLoading, setAuthLoading] = useState(isFirebaseConfigured);
+  const [isAuthenticated, setIsAuthenticated] = useState(!!!auth);
+  const [authLoading, setAuthLoading] = useState(!!auth);
   const [authForm, setAuthForm] = useState({ email: "", password: "" });
   const [authError, setAuthError] = useState("");
 
   useEffect(() => {
-    if (!isFirebaseConfigured || !auth) {
+    if (!!!auth || !auth) {
       setAuthLoading(false);
       setIsAuthenticated(true);
       return;
@@ -362,9 +362,9 @@ function AdminPage() {
           Manage your portfolio content, leads, and sections from one dashboard.
         </p>
         <p className="admin-mode-tag">
-          Data mode: {isFirebaseConfigured ? "Firebase (Cloud)" : "Local (Browser Storage)"}
+          Data mode: {!!auth ? "Firebase (Cloud)" : "Local (Browser Storage)"}
         </p>
-        {isFirebaseConfigured ? (
+        {!!auth ? (
           <button className="btn btn-secondary" type="button" onClick={handleAdminLogout}>
             Logout
           </button>

@@ -11,10 +11,16 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-const app = initializeApp(firebaseConfig);
+let app;
+let auth;
+let db;
 
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+let firebaseReady = Boolean(firebaseConfig.apiKey);
 
-/* IMPORTANT: this fixes your build error */
-export const isFirebaseConfigured = true;
+if (firebaseReady) {
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+}
+
+export { app, auth, db };

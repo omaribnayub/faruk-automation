@@ -1,16 +1,29 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./Home";
-import AdminPage from "./AdminPage";
-import Login from "./Login";
+import { lazy, Suspense } from "react";
+import ProtectedRoute from "./ProtectedRoute";
+
+const Home = lazy(() => import("./Home"));
+const AdminPage = lazy(() => import("./AdminPage"));
+const Login = lazy(() => import("./Login"));
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/admin" element={<AdminPage />} />
-      </Routes>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminPage />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }
